@@ -39,6 +39,10 @@ DewPt_list = []
 def datetime_to_filepath(dt):
 	return '%s%s%s%s.csv' %(dt.strftime('%Y'), dt.strftime('%m'), dt.strftime('%d'), dt.strftime('%H'))  
 
+##########################
+#read serial port 
+##########################
+
 def daemon_serial_read():
 
 	global WindDir_list
@@ -72,7 +76,7 @@ def daemon_serial_read():
 
 
 ##########################
-#Main function loop
+#average 60-seconds of serial data and write to file
 ##########################
 
 def write_to_file():
@@ -174,13 +178,18 @@ def write_to_file():
 			
 		start_time += 60
 		time.sleep(start_time - time.time())	
-			
+		
+		
+##########################
+#Main Loop, initializes the threads and handles keyboard interrupt
+##########################			
 	
 def main():
 	try:
 		d = threading.Thread(name='daemon_serial_read', target=daemon_serial_read)
 		d.setDaemon(True)	
-		m = threading.Thread(name='write_to_file', target=write_to_file)	
+		m = threading.Thread(name='write_to_file', target=write_to_file)
+		m.setDaemon(True)	
 		d.start()
 		time.sleep(60)
 		m.start()
