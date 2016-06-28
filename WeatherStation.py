@@ -68,7 +68,7 @@ def daemon_serial_read():
 	while True:
 		data = serial_port.readline().split(',')
 		
-		if cycle_count == 15:
+		if cycle_count == 60:
 			cycle_count = 0
 			data_val_count = 0
 		else:
