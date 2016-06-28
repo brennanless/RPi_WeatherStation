@@ -50,10 +50,10 @@ sensor_units = ['degrees', 'm/s', 'hpa', '%', 'C', 'C']
 timeout = 10
 
 #permanent file paths
-#path = '/home/pi/Documents/RPi_WeatherStation/data/'
-path = '/Users/brennanless/GoogleDrive/Attics_CEC/DAQ/RPi_WeatherStation/data/'
-archive_path = '/Users/brennanless/GoogleDrive/Attics_CEC/DAQ/RPi_WeatherStation/data/archive/'
-#archive_path = '/home/pi/Documents/RPi_WeatherStation/data/archive/'
+path = '/home/pi/Documents/RPi_WeatherStation/data/'
+#path = '/Users/brennanless/GoogleDrive/Attics_CEC/DAQ/RPi_WeatherStation/data/'
+#archive_path = '/Users/brennanless/GoogleDrive/Attics_CEC/DAQ/RPi_WeatherStation/data/archive/'
+archive_path = '/home/pi/Documents/RPi_WeatherStation/data/archive/'
 
 #Create list of .csv files to upload
 os.chdir(path) #change working directory to path
