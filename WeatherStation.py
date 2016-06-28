@@ -88,65 +88,9 @@ def write_to_file():
 	global Temp_list
 	global DewPt_list
 
-# 	time.sleep(20) #must wait 9.5 seconds after turning on MetPak for data output
-# 	
-# 	#open serial communication with MetPak
-# 	#if serial connection is not successful, pause 10-sec, try again.
-# 	#This only happens if USB is not connected to RPi.
-# 	while True:
-# 		try:
-# 			serial_port = serial.Serial(usb_port, baud, timeout=timeOut)
-# 			break	
-# 		except:
-# 			time.sleep(10)
-# 			continue
-
 	start_time = time.time()
 	
 	while True:
-	
-# 		WindDir_list = []
-# 		WindSpd_list = []
-# 		Pressure_list = []
-# 		RH_list = []
-# 		Temp_list = []
-# 		DewPt_list = []
-
-			
-# 		read line of data from serial port, split by comma. 
-# 		try:
-# 			data = serial_port.readline().split(',')
-# 		except:
-# 			if readline fails, pause 60-seconds, try again.
-#                 	start_time += 60
-#                 	time.sleep(start_time - time.time())
-# 			break
-# 			continue
-# 
-# 		print(data)
-# 
-# 		for i in range(15):
-# 		
-# 			data = serial_port.readline().split(',')
-# 
-# 			if data[1].isdigit() == False:
-# 				break
-# 		
-# 			format values as numeric, then strings
-# 			WindDir_list.append(int(data[1]))
-# 			WindSpd_list.append(float(data[2]))
-# 			Pressure_list.append(float(data[3]))
-# 			RH_list.append(float(data[4]))
-# 			Temp_list.append(float(data[5]))
-# 			DewPt_list.append(float(data[6]))
-# 			
-# 			format values as numeric, then strings
-# 			WindDir = .append('{0}'.format(int(data[1])))
-# 			WindSpd.append('{0}'.format(float(data[2])))
-# 			Pressure.append('{0}'.format(float(data[3])))
-# 			RH.append('{0}'.format(float(data[4])))
-# 			Temp.append('{0}'.format(float(data[5])))
-# 			DewPt.append('{0}'.format(float(data[6])))
 
 		#calculate the average of the last 15 values.
 		WindDir = sum(WindDir_list[-15:]) / float(len(WindDir_list[-15:]))
