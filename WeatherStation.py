@@ -34,6 +34,9 @@ Pressure_list = []
 RH_list = []
 Temp_list = []
 DewPt_list = []
+cycle_count = 0
+data_val_count = 0
+
 
 #function takes a datetime.now() object and creates a file name string formatted as 'YYYYMMDDHH.csv'	
 def datetime_to_filepath(dt):
@@ -51,25 +54,42 @@ def daemon_serial_read():
 	global RH_list
 	global Temp_list
 	global DewPt_list
-	
+	global cycle_count
+	global data_val_count	
+
 	time.sleep(20)
 	
 	serial_port = serial.Serial(usb_port, baud, timeout=timeOut)
 	
+
+	cycle_count = 0 #count of all cycles
+	data_val_count = 0 #count of legitimate data values returned
+
 	while True:
 		data = serial_port.readline().split(',')
+		
+		if cycle_count == 15:
+			cycle_count = 0
+			data_val_count = 0
+		else:
+			cycle_count += 1 #increment cycle_count every cycle
+		
 		print data
 		if data[0]:
-			if data[1].isdigit() == True:
+			if len(data)>1:
+				if data[1].isdigit() == True:
 		#format values as numeric, then strings
-				WindDir_list.append(int(data[1]))
-				WindSpd_list.append(float(data[2]))
-				Pressure_list.append(float(data[3]))
-				RH_list.append(float(data[4]))
-				Temp_list.append(float(data[5]))
-				DewPt_list.append(float(data[6]))
-				time.sleep(0.5)
-			else:
+					data_val_count += 1 #increment data_val_count when real data are received.
+					WindDir_list.append(int(data[1]))
+					WindSpd_list.append(float(data[2]))
+					Pressure_list.append(float(data[3]))
+					RH_list.append(float(data[4]))
+					Temp_list.append(float(data[5]))
+					DewPt_list.append(float(data[6]))
+					time.sleep(0.5)
+				else:
+					time.sleep(0.5)
+			else:	
 				time.sleep(0.5)
 		else:
 			time.sleep(0.5)
@@ -87,42 +107,52 @@ def write_to_file():
 	global RH_list
 	global Temp_list
 	global DewPt_list
+	global data_val_count
 
 	start_time = time.time()
 	
 	while True:
+		if data_val_count != 0:
+			try:
+				#calculate the average of the last 15 values.
+				WindDir = sum(WindDir_list[-15:]) / float(len(WindDir_list[-15:]))
+				WindSpd = sum(WindSpd_list[-15:]) / len(WindSpd_list[-15:])
+				Pressure = sum(Pressure_list[-15:]) / len(Pressure_list[-15:])
+				RH = sum(RH_list[-15:]) / len(RH_list[-15:])
+				Temp = sum(Temp_list[-15:]) / len(Temp_list[-15:])
+				DewPt = sum(DewPt_list[-15:]) / len(DewPt_list[-15:])
+		
+			except ZeroDivisionError:
+				start_time += 60
+				time.sleep(start_time - time.time())
+				continue
 
-		#calculate the average of the last 15 values.
-		WindDir = sum(WindDir_list[-15:]) / float(len(WindDir_list[-15:]))
-		WindSpd = sum(WindSpd_list[-15:]) / len(WindSpd_list[-15:])
-		Pressure = sum(Pressure_list[-15:]) / len(Pressure_list[-15:])
-		RH = sum(RH_list[-15:]) / len(RH_list[-15:])
-		Temp = sum(Temp_list[-15:]) / len(Temp_list[-15:])
-		DewPt = sum(DewPt_list[-15:]) / len(DewPt_list[-15:])
+			DT = datetime.now()
+			TimeStr = DT.strftime('%Y-%m-%d %H:%M:%S')
 		
-		DT = datetime.now()
-		TimeStr = DT.strftime('%Y-%m-%d %H:%M:%S')
+			#assemble data string to write to file.
+			data_string = '%s,%s,%s,%s,%s,%s,%s\n' %(TimeStr, WindDir, WindSpd, Pressure, RH, Temp, DewPt)
+			print(data_string)
 		
-		#assemble data string to write to file.
-		data_string = '%s,%s,%s,%s,%s,%s,%s\n' %(TimeStr, WindDir, WindSpd, Pressure, RH, Temp, DewPt)
-		print(data_string)
+			filename = datetime_to_filepath(DT)
+			historyFile = os.path.join(historyFilepath, filename)
 		
-		filename = datetime_to_filepath(DT)
-		historyFile = os.path.join(historyFilepath, filename)
-		
-		#open data file for current hour, write data line, close file.
-		#if file opening fails, pause 60-sec, try again.
-		try:
-			with open(historyFile, 'a') as datacsv: 
-				datacsv.write(data_string)
-		except:
-              		start_time += 60
-                	time.sleep(start_time - time.time())
-			continue
+			#open data file for current hour, write data line, close file.
+			#if file opening fails, pause 60-sec, try again.
+			try:
+				with open(historyFile, 'a') as datacsv: 
+					datacsv.write(data_string)
+			except:
+              			start_time += 60
+	                	time.sleep(start_time - time.time())
+				continue
 			
-		start_time += 60
-		time.sleep(start_time - time.time())	
-		
+			start_time += 60
+			time.sleep(start_time - time.time())	
+		else:
+			start_time += 60
+			time.sleep(start_time - time.time())
+
 		
 ##########################
 #Main Loop, initializes the threads and handles keyboard interrupt
