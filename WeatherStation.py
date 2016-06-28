@@ -1,3 +1,4 @@
+import signal
 import os
 import time
 from datetime import datetime
@@ -53,23 +54,28 @@ def daemon_serial_read():
 	
 	while True:
 		data = serial_port.readline().split(',')
-		if data[1].isdigit() == True:
+		print data
+		if data[0]:
+			if data[1].isdigit() == True:
 		#format values as numeric, then strings
-		WindDir_list.append(int(data[1]))
-		WindSpd_list.append(float(data[2]))
-		Pressure_list.append(float(data[3]))
-		RH_list.append(float(data[4]))
-		Temp_list.append(float(data[5]))
-		DewPt_list.append(float(data[6]))
-		time.sleep(1)
-	
+				WindDir_list.append(int(data[1]))
+				WindSpd_list.append(float(data[2]))
+				Pressure_list.append(float(data[3]))
+				RH_list.append(float(data[4]))
+				Temp_list.append(float(data[5]))
+				DewPt_list.append(float(data[6]))
+				time.sleep(0.5)
+			else:
+				time.sleep(0.5)
+		else:
+			time.sleep(0.5)
 
 
 ##########################
 #Main function loop
 ##########################
 
-def main():
+def write_to_file():
 
 	global WindDir_list
 	global WindSpd_list
@@ -139,7 +145,7 @@ def main():
 # 			DewPt.append('{0}'.format(float(data[6])))
 
 		#calculate the average of the last 15 values.
-		WindDir = sum(WindDir_list[-15:]) / len(WindDir_list[-15:])
+		WindDir = sum(WindDir_list[-15:]) / float(len(WindDir_list[-15:]))
 		WindSpd = sum(WindSpd_list[-15:]) / len(WindSpd_list[-15:])
 		Pressure = sum(Pressure_list[-15:]) / len(Pressure_list[-15:])
 		RH = sum(RH_list[-15:]) / len(RH_list[-15:])
@@ -170,16 +176,20 @@ def main():
 		time.sleep(start_time - time.time())	
 			
 	
-d = threading.Thread(name='daemon_serial_read', target=daemon_serial_read)
-d.setDaemon(True)	
-	
-m = threading.Thread(name='main', target=main)	
-
-d.start()
-m.start()		
+def main():
+	try:
+		d = threading.Thread(name='daemon_serial_read', target=daemon_serial_read)
+		d.setDaemon(True)	
+		m = threading.Thread(name='write_to_file', target=write_to_file)	
+		d.start()
+		time.sleep(60)
+		m.start()
+		signal.pause()
+	except(KeyboardInterrupt, SystemExit):
+		print 'Exiting program'		
 			
 			
-# if __name__ == '__main__':
-# 	main()			
+if __name__ == '__main__':
+	main()			
 			
 		
