@@ -45,7 +45,7 @@ def datetime_to_int(dt):
     
 #smap constants
 smap_sourcename = 'Turnberry'
-sensor_paths = ['/MetPak_W-dir', 'MetPak_W-speed', 'MetPak_Baro', 'MetPak_RH', '/MetPak_temp', 'MetPak_DewPointTemp']
+sensor_paths = ['/MetPak_W-dir', '/MetPak_W-speed', '/MetPak_Baro', '/MetPak_RH', '/MetPak_temp', '/MetPak_DewPointTemp']
 sensor_uuids = ['65f57b21-3d41-11e6-bc07-acbc32bae629', '6b9cfc9e-3d41-11e6-a3dc-acbc32bae629', '73452e75-3d41-11e6-8d67-acbc32bae629', '7afd9399-3d41-11e6-bb26-acbc32bae629', '818f6a4f-3d41-11e6-958e-acbc32bae629', '8a238263-3d41-11e6-883d-acbc32bae629']
 sensor_units = ['degrees', 'm/s', 'hpa', '%', 'C', 'C']
 timeout = 10
