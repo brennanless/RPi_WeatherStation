@@ -21,6 +21,8 @@ def interpolateWind(wind_spd, wind_dir):
 	ew_mean = sum(ew)/len(ew)
 	wind_spd_out = math.pow((math.pow(ns_mean, 2) + math.pow(ew_mean, 2)), 0.5) #quadratic formula
 	wind_dir_out = math.atan2(ew_mean, ns_mean) * 180 / math.pi
+	if wind_dir_out < 0:
+		wind_dir_out += 360
 	return wind_spd_out, wind_dir_out
 
 
