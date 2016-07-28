@@ -7,6 +7,27 @@ import math
 import threading
 
 
+def interpolateWind(wind_spd, wind_dir):
+	#Input lists of wind speeds and wind directions.
+	#Calculate ns and ew vectors of spd-dir for each paired list
+	#Then average those vectors
+	#Decompose average vector to spd and dir components.
+	ns = []
+	ew = []
+	for val in range(len(wind_spd)):
+		ns.append(math.cos(wind_dir[val] * math.pi / 180) * wind_spd[val])
+		ew.append(math.sin(wind_dir[val] * math.pi / 180) * wind_spd[val])
+	ns_mean = sum(ns)/len(ns)
+	ew_mean = sum(ew)/len(ew)
+	wind_spd_out = math.pow((math.pow(ns_mean, 2) + math.pow(ew_mean, 2)), 0.5) #quadratic formula
+	wind_dir_out = math.atan2(ew_mean, ns_mean) * 180 / math.pi
+	return wind_spd_out, wind_dir_out
+
+
+#function takes a datetime.now() object and creates a file name string formatted as 'YYYYMMDDHH.csv'	
+def datetime_to_filepath(dt):
+	return '%s%s%s%s.csv' %(dt.strftime('%Y'), dt.strftime('%m'), dt.strftime('%d'), dt.strftime('%H'))  
+
 ##########################
 #ASCII String format:
 ##########################
@@ -37,10 +58,6 @@ DewPt_list = []
 cycle_count = 0
 data_val_count = 0
 
-
-#function takes a datetime.now() object and creates a file name string formatted as 'YYYYMMDDHH.csv'	
-def datetime_to_filepath(dt):
-	return '%s%s%s%s.csv' %(dt.strftime('%Y'), dt.strftime('%m'), dt.strftime('%d'), dt.strftime('%H'))  
 
 ##########################
 #read serial port 
@@ -115,8 +132,9 @@ def write_to_file():
 		if data_val_count != 0:
 			try:
 				#calculate the average of the last 15 values.
-				WindDir = sum(WindDir_list[-15:]) / float(len(WindDir_list[-15:]))
-				WindSpd = sum(WindSpd_list[-15:]) / len(WindSpd_list[-15:])
+				wind = interpolateWind(WindSpd_list[-15:], WindDir_list[-15:])
+				WindDir = wind[1]
+				WindSpd = wind[0]
 				Pressure = sum(Pressure_list[-15:]) / len(Pressure_list[-15:])
 				RH = sum(RH_list[-15:]) / len(RH_list[-15:])
 				Temp = sum(Temp_list[-15:]) / len(Temp_list[-15:])
