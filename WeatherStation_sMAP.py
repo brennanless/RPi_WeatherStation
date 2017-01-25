@@ -45,9 +45,9 @@ def datetime_to_int(dt):
 	 
     
 #smap constants
-smap_sourcename = 'Turnberry'
+smap_sourcename = 'Clovis_WeatherStation'
 sensor_paths = ['/MetPak_W-dir', '/MetPak_W-speed', '/MetPak_Baro', '/MetPak_RH', '/MetPak_temp', '/MetPak_DewPointTemp']
-sensor_uuids = ['65f57b21-3d41-11e6-bc07-acbc32bae629', '6b9cfc9e-3d41-11e6-a3dc-acbc32bae629', '73452e75-3d41-11e6-8d67-acbc32bae629', '7afd9399-3d41-11e6-bb26-acbc32bae629', '818f6a4f-3d41-11e6-958e-acbc32bae629', '8a238263-3d41-11e6-883d-acbc32bae629']
+sensor_uuids = ['1de3b86e-e348-11e6-9c80-001aa07ad31d', '48c91c86-e348-11e6-8824-001aa07ad31d', '4928237a-e348-11e6-8aa4-001aa07ad31d', '496c479e-e348-11e6-a5ee-001aa07ad31d', '49a7a294-e348-11e6-bb37-001aa07ad31d', '49d72320-e348-11e6-9a91-001aa07ad31d']
 sensor_units = ['degrees', 'm/s', 'hpa', '%', 'C', 'C']
 timeout = 10
 
