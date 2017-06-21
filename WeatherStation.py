@@ -134,13 +134,13 @@ def write_to_file():
 		if data_val_count != 0:
 			try:
 				#calculate the average of the last 15 values.
-				wind = interpolateWind(WindSpd_list[-15:], WindDir_list[-15:])
+				wind = interpolateWind(WindSpd_list[-60:], WindDir_list[-60:])
 				WindDir = wind[1]
 				WindSpd = wind[0]
-				Pressure = sum(Pressure_list[-15:]) / len(Pressure_list[-15:])
-				RH = sum(RH_list[-15:]) / len(RH_list[-15:])
-				Temp = sum(Temp_list[-15:]) / len(Temp_list[-15:])
-				DewPt = sum(DewPt_list[-15:]) / len(DewPt_list[-15:])
+				Pressure = sum(Pressure_list[-60:]) / len(Pressure_list[-60:])
+				RH = sum(RH_list[-60:]) / len(RH_list[-60:])
+				Temp = sum(Temp_list[-60:]) / len(Temp_list[-60:])
+				DewPt = sum(DewPt_list[-60:]) / len(DewPt_list[-60:])
 		
 			except ZeroDivisionError:
 				start_time += 60
